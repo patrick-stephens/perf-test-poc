@@ -43,12 +43,23 @@ done
 
 # Dump logs and metrics
 $DOCKER_COMPOSE_CMD logs &> "$OUTPUT_DIR/run.log"
-curl -XPOST "$PROM_URL/api/v1/admin/tsdb/snapshot"
 
 for METRIC in "${QUERY_METRICS[@]}"; do
     helpers/promplot -query "$METRIC" -range "$QUERY_RANGE" -url "$PROM_URL" -file "$OUTPUT_DIR/$METRIC.png"
+    curl --fail --silent "${PROM_URL}/api/v1/query?query=$METRIC" | jq > "$OUTPUT_DIR/$METRIC.json"
 done
 
-if [[ -n "${SKIP_TEARDOWN:-}" ]]; then
+if curl -XPOST "${PROM_URL}/api/v1/admin/tsdb/snapshot"; then
+    $DOCKER_COMPOSE_CMD exec prometheus /bin/sh -c "tar -czvf /tmp/prom-data.tgz -C /prometheus/snapshots/ ."
+    PROM_CONTAINER_ID=$($DOCKER_COMPOSE_CMD ps -q prometheus)
+    if [[ -n "$PROM_CONTAINER_ID" ]]; then
+        docker cp "$PROM_CONTAINER_ID":/tmp/prom-data.tgz "$OUTPUT_DIR"/
+        echo "Copied snapshot to $OUTPUT_DIR/prom-data.tgz"
+    fi
+else
+    echo "Unable to trigger snapshot on Prometheus"
+fi
+
+if [[ -z "${SKIP_TEARDOWN:-}" ]]; then
     ./stop.sh
 fi
