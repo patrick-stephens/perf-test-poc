@@ -20,8 +20,11 @@ services:
       FLB_DEV_RB_MS: 100
 
   data-generator:
-    build: https://github.com/lecaros/flog.git
-    command: --overwrite --loop --output /logs/test.log --rate ${FLOG_RATE} --type log
+    # build: https://github.com/lecaros/flog.git
+    # command: --overwrite --loop --output /logs/test.log --rate ${FLOG_RATE} --type log
+    image: fluentbitdev/fluent-bit-ci:benchmark
+    container_name: fluentbit-benchmark
+    command: bash -c "rm -fr /logs/test.log && /run_log_generator.py --log-size-in-bytes 1000 --log-rate 200000 --log-agent-input-type tail --tail-file-path /logs/test.log"
     volumes:
       - log-volume:/logs:rw
 
