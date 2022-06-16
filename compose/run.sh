@@ -10,8 +10,9 @@ DOCKER_COMPOSE_CMD=${DOCKER_COMPOSE_CMD:-docker-compose -f fluent-delta-stack.ym
 QUERY_RANGE=${QUERY_RANGE:-5m}
 END=$((SECONDS+300))
 
-declare -a QUERY_METRICS=("fluentbit_input_records_total")
-
+declare -a QUERY_METRICS=("fluentbit_input_records_total"
+                          "fluentbit_output_records_total"
+)
 ./stop.sh
 
 if [[ ! -x "helpers/promplot" ]]; then
@@ -32,10 +33,12 @@ while [ $SECONDS -lt $END ]; do
     fi
     sleep 10
 done
+
+# Dump logs and metrics
 $DOCKER_COMPOSE_CMD logs &> "$OUTPUT_DIR/run.log"
+curl -XPOST "$PROM_URL/api/v1/admin/tsdb/snapshot"
 
 mkdir -p "$OUTPUT_DIR"
-curl -XPOST "$PROM_URL/api/v1/admin/tsdb/snapshot"
 for METRIC in "${QUERY_METRICS[@]}"; do
     helpers/promplot -query "$METRIC" -range "$QUERY_RANGE" -url "$PROM_URL" -file "$OUTPUT_DIR/$METRIC.png"
 done
