@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+
+  fb-baseline:
+    image: ${FB_BASELINE_IMAGE}
+    volumes:
+      - log-volume:/logs:ro
+      - ${FB_BASELINE_CONFIG}:/fluent-bit/etc/fluent-bit.conf:ro
+
+  fb-delta:
+    # image: ${FB_DELTA_IMAGE}
+    build:
+      context: https://github.com/fluent/fluent-bit.git#input-thread-2
+      dockerfile: dockerfiles/Dockerfile
+    volumes:
+      - log-volume:/logs:ro
+      - ${FB_DELTA_CONFIG}:/fluent-bit/etc/fluent-bit.conf:ro
+    environment:
+      FLB_DEV_RB_MS: 100
+
+  data-generator:
+    build: https://github.com/lecaros/flog.git
+    command: --overwrite --loop --output /logs/test.log --rate ${FLOG_RATE} --type log
+    volumes:
+      - log-volume:/logs:rw
+
+volumes:
+  log-volume:
