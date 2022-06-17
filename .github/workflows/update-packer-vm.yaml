@@ -1,9 +1,13 @@
 ---
 name: Update VM image
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
+    paths:
+      - packer/
+  pull_request:
     paths:
       - packer/
 
@@ -11,8 +15,8 @@ jobs:
   create-vm-instance:
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v3
 
