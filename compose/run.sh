@@ -32,6 +32,7 @@ mkdir -p "$OUTPUT_DIR"
 if [[ -z "${SKIP_REBUILD:-}" ]]; then
     $DOCKER_COMPOSE_CMD build
 fi
+$DOCKER_COMPOSE_CMD pull
 $DOCKER_COMPOSE_CMD up --force-recreate -d
 
 while [ $SECONDS -lt $END ]; do
