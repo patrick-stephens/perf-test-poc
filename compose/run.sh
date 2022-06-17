@@ -48,7 +48,7 @@ done
 $DOCKER_COMPOSE_CMD logs &> "$OUTPUT_DIR/run.log"
 
 for METRIC in "${QUERY_METRICS[@]}"; do
-    helpers/promplot -query "$METRIC" -range "$QUERY_RANGE" -url "$PROM_URL" -file "$OUTPUT_DIR/$METRIC.png"
+    helpers/promplot -query "$METRIC" -title "$METRIC" -range "$QUERY_RANGE" -url "$PROM_URL" -file "$OUTPUT_DIR/$METRIC.png"
     curl --fail --silent "${PROM_URL}/api/v1/query?query=$METRIC" | jq > "$OUTPUT_DIR/$METRIC.json"
 done
 
