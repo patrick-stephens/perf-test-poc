@@ -29,7 +29,9 @@ rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
 # start
-$DOCKER_COMPOSE_CMD build
+if [[ -n "${SKIP_REBUILD:-}" ]]; then
+    $DOCKER_COMPOSE_CMD build
+fi
 $DOCKER_COMPOSE_CMD up --force-recreate -d
 
 while [ $SECONDS -lt $END ]; do
