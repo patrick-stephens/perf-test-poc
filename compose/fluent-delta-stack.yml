@@ -23,10 +23,14 @@ services:
     # build: https://github.com/lecaros/flog.git
     # command: --overwrite --loop --output /logs/test.log --rate ${FLOG_RATE} --type log
     image: fluentbitdev/fluent-bit-ci:benchmark
-    container_name: fluentbit-benchmark
     command: bash -c "rm -fr /logs/test.log && /run_log_generator.py --log-size-in-bytes 1000 --log-rate 200000 --log-agent-input-type tail --tail-file-path /logs/test.log"
     volumes:
       - log-volume:/logs:rw
 
+  multifile-data-generator:
+    image: fluentbitdev/fluent-bit-ci:benchmark
+    command: bash -c "rm -fr /logs/test.log && for i in seq(10); do;/run_log_generator.py --log-size-in-bytes 1000 --log-rate 20 --log-agent-input-type tail --tail-file-path /logs/multi.log.$i &;done;/run_log_generator.py --log-size-in-bytes 1000 --log-rate 20 --log-agent-input-type tail --tail-file-path /logs/multi.log.11"
+    volumes:
+      - log-volume:/logs:rw
 volumes:
   log-volume:
