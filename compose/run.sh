@@ -53,7 +53,7 @@ for METRIC in "${QUERY_METRICS[@]}"; do
 done
 
 if curl -XPOST "${PROM_URL}/api/v1/admin/tsdb/snapshot"; then
-    $DOCKER_COMPOSE_CMD exec prometheus /bin/sh -c "tar -czvf /tmp/prom-data.tgz -C /prometheus/snapshots/ ."
+    $DOCKER_COMPOSE_CMD exec -T prometheus /bin/sh -c "tar -czvf /tmp/prom-data.tgz -C /prometheus/snapshots/ ."
     PROM_CONTAINER_ID=$($DOCKER_COMPOSE_CMD ps -q prometheus)
     if [[ -n "$PROM_CONTAINER_ID" ]]; then
         docker cp "$PROM_CONTAINER_ID":/tmp/prom-data.tgz "$OUTPUT_DIR"/

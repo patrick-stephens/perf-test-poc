@@ -13,8 +13,10 @@
             "os": "ubuntu-2004-lts",
             "type": "perf-test"
           },
+
           "instance_name": "perf-test-{{uuid}}",
 
+          "machine_type": "e2-standard-8",
           "disk_size": "250",
 
           "ssh_username": "packer",

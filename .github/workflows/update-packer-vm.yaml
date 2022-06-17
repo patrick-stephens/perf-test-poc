@@ -31,8 +31,15 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: gcloud info
+        shell: bash
+
+      - name: Validate packer
+        run: packer validate ./packer.json
+        shell: bash
+        working-directory: packer
 
       - name: Build instance
+        if: github.event_name != 'pull_request'
         run: |
           packer build -force -color=false ./packer.json
         shell: bash

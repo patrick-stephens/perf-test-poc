@@ -13,7 +13,7 @@ apt-get update
 apt-cache policy docker-ce
 
 # Add any tools we need
-apt-get install -y docker-ce git
+apt-get install -y docker-ce git jq
 systemctl status docker
 
 # Install docker-compose
@@ -26,3 +26,6 @@ adduser perf-test
 usermod -aG sudo perf-test
 usermod -aG docker perf-test
 SCRIPT
+
+echo "Adding $USER to docker group"
+sudo usermod -aG docker "$USER"

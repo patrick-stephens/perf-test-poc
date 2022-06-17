@@ -66,8 +66,7 @@ jobs:
         timeout-minutes: 30
         run: |
           gcloud compute ssh "$VM_NAME" -q --command="cd ${{ github.repository }}/compose && ./run.sh"
-          mkdir -p outputs
-          gcloud compute scp --force-key-file-overwrite --recurse "$VM_NAME":~/${{ github.repository }}/outputs outputs
+          gcloud compute scp --force-key-file-overwrite --recurse "$VM_NAME":~/${{ github.repository }}/compose/output output
         shell: bash
 
       - name: Upload any results
