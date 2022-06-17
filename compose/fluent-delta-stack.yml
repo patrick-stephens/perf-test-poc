@@ -20,30 +20,16 @@ services:
       FLB_DEV_RB_MS: 100
 
   data-generator:
-    # build: https://github.com/lecaros/flog.git
-    # command: --overwrite --loop --output /logs/test.log --rate ${FLOG_RATE} --type log
     image: fluentbitdev/fluent-bit-ci:benchmark
-    command: bash /data-gen-multi.sh
+    command: bash /data-gen.sh
     volumes:
       - log-volume:/logs:rw
-      - ./data-gen-multi.sh:/data-gen-multi.sh:ro
+      - ./data-gen.sh:/data-gen.sh:ro
     environment:
-      LOG_PREFIX: test
-      LOG_COUNT: 1
-      LOG_RATE: 20000
-      LOG_SIZE: 1000
-
-  multifile-data-generator:
-    image: fluentbitdev/fluent-bit-ci:benchmark
-    command: bash /data-gen-multi.sh
-    volumes:
-      - log-volume:/logs:rw
-      - ./data-gen-multi.sh:/data-gen-multi.sh:ro
-    environment:
-      LOG_PREFIX: multi
-      LOG_COUNT: 100
-      LOG_RATE: 20
-      LOG_SIZE: 1000
+      LOG_PREFIX: $LOG_PREFIX}
+      LOG_COUNT: ${LOG_COUNT}
+      LOG_RATE: ${LOG_RATE}
+      LOG_SIZE: ${LOG_SIZE}
 
 volumes:
   log-volume:
