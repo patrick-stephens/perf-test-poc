@@ -25,11 +25,15 @@ services:
     volumes:
       - log-volume:/logs:rw
       - ./data-gen.sh:/data-gen.sh:ro
+      - ./multi-line-log.sh:/multi-line-log.sh:ro
     environment:
       LOG_PREFIX: $LOG_PREFIX}
       LOG_COUNT: ${LOG_COUNT}
-      LOG_RATE: ${LOG_RATE}
       LOG_SIZE: ${LOG_SIZE}
+      # For multiline set this to >0
+      LINE_COUNT: ${LINE_COUNT}
+      # For multiline set this to the sleep period between log entries
+      LOG_RATE: ${LOG_RATE}
 
 volumes:
   log-volume:
