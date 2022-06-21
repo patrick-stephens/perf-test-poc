@@ -5,15 +5,15 @@ source "$TEST_TEMPLATE_ROOT/test/common.sh"
 
 start
 
+until curl --output /dev/null --silent --head --fail 127.0.0.1:2020/; do
+    sleep 1
+done
+
 # Enable tracing
 if command -v http; then
-    until http -v 127.0.0.1:2020/api/v1/trace input=dummy.0 output=stdout prefix=trace. enable:=true params:='{"format":"json"}'; do
-        sleep 10
-    done
+    http -v 127.0.0.1:2020/api/v1/trace input=dummy.0 output=stdout prefix=trace. enable:=true params:='{"format":"json"}'
 elif command -v curl; then
-    until curl --fail --header 'Content-Type: application/json' --data '{"enable":true, "input": "dummy.0", "output": "stdout", "params": { "format": "json" }, "prefix": "trace."}' '127.0.0.1:2020/api/v1/trace'; do
-        sleep 10
-    done
+    curl --fail --header 'Content-Type: application/json' --data '{"enable":true, "input": "dummy.0", "output": "stdout", "params": { "format": "json" }, "prefix": "trace."}' '127.0.0.1:2020/api/v1/trace'
 else
     echo "No curl or httpie installed"
     exit 1
