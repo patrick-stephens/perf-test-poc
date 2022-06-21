@@ -2,6 +2,7 @@
 set -eux
 
 set
+source "$DEFAULT_RUN_SCRIPT"
 
 start
 
