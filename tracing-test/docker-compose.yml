@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+
+  fb-baseline:
+    image: ${FB_BASELINE_IMAGE}
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+
+  fb-delta:
+    build:
+      context: ${FB_DELTA_REF}
+      dockerfile: dockerfiles/Dockerfile
+      args:
+        - FLB_TRACE=On
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+    ports:
+      - "2020:2020"

@@ -18,6 +18,8 @@ services:
       - ${FB_DELTA_CONFIG}:/fluent-bit/etc/fluent-bit.conf:ro
     environment:
       FLB_DEV_RB_MS: 100
+    ports:
+      - "2020:2020"
 
   data-generator:
     image: fluentbitdev/fluent-bit-ci:benchmark
