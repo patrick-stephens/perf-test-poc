@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eux
 
+set
+
 start
 
 # Enable tracing
