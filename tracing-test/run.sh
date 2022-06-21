@@ -1,8 +1,7 @@
 #!/bin/bash
 set -eux
 
-set
-source "$DEFAULT_RUN_SCRIPT"
+source "$TEST_TEMPLATE_ROOT/test/common.sh"
 
 start
 
